@@ -7,13 +7,16 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"log"
 	"main/utils"
+	"math/rand"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
 
 const databaseMigrationsPath = "database/migrations/"
 const databaseSeedersPath = "database/seeders/"
+const databasePath = "database/"
 
 type databaseMigrationsJson struct {
 	Names []string
@@ -123,8 +126,18 @@ func RunMigrations() {
 
 }
 
+func seed(filePath string) {
+	conn := Conn
+	seedQuery, _ := os.ReadFile(filePath)
+	conn.Exec(context.Background(), string(seedQuery))
+}
+
+// CreateSeeder
+// columns in format name=type
+// if name contains `_id`, type must be a name of table
 func CreateSeeder(title string, count int, columns ...string) {
 
+	fmt.Println("Running seeder " + title)
 	seederTitle := time.Now().Format("2006_01_02_15_04_05") + "-" + title + ".sql"
 	seederPath := databaseSeedersPath + seederTitle
 
@@ -156,16 +169,47 @@ func CreateSeeder(title string, count int, columns ...string) {
 		log.Fatal(fmt.Sprint("createSeeder [unmarshal file]: ", errorWrite))
 	}
 
+	actualColumns := make([]string, 0)
+	for _, column := range columns {
+		splitColumn := strings.Split(column, "=")
+		_name := splitColumn[0]
+		actualColumns = append(actualColumns, _name)
+	}
+
+	values := make([][]string, count)
+	var ids = make(map[string][]int)
 	for i := 0; i < count; i++ {
-		emptyValues := make([]string, 0)
-		for _ = range columns {
-			emptyValues = append(emptyValues, "\"\"")
+		for _, column := range columns {
+			splitColumn := strings.Split(column, "=")
+			_name := splitColumn[0]
+			_type := splitColumn[1]
+			if _type == "null" {
+				values[i] = append(values[i], "NULL")
+			} else if strings.Contains(_name, "_id") {
+				tableName := _type
+				if len(ids[column]) == 0 {
+					ids[column] = utils.SelectIdsFromTable(Conn, tableName)
+				}
+				values[i] = append(values[i], strconv.Itoa(ids[column][rand.Intn(len(ids[column]))]))
+			} else {
+				generatedRandomValue, dbType := utils.Rand(_type)
+				generatedRandomValue = strings.ReplaceAll(generatedRandomValue, "'", "")
+				if dbType == "string" {
+					values[i] = append(values[i], "'"+generatedRandomValue+"'")
+				} else {
+					values[i] = append(values[i], generatedRandomValue)
+				}
+			}
 		}
+	}
+	values = utils.UniqueSliceElements(values)
+
+	for i := 0; i < len(values); i++ {
 		_, err := fileUp.WriteString(spew.Sprintf(
 			"INSERT INTO %s(%s) VALUES (\n\t%s\n);\n\n",
 			title,
-			strings.Join(columns[:], ", "),
-			strings.Join(emptyValues, ", "),
+			strings.Join(actualColumns, ", "),
+			strings.Join(values[i], ", "),
 		))
 		if err != nil {
 			log.Fatal(fmt.Sprint("createSeeder [cannot write to file file]: ", err))
@@ -174,5 +218,32 @@ func CreateSeeder(title string, count int, columns ...string) {
 
 	// close created files
 	defer fileUp.Close()
+	defer seed(seederPath)
 
+}
+
+func CreateFunctions() {
+	conn := Conn
+	functionsQuery, _ := os.ReadFile(databasePath + "/functions.sql")
+	_, err := conn.Exec(context.Background(), string(functionsQuery))
+	if err != nil {
+		fmt.Println(err.Error() + "1")
+		return
+	}
+	triggersQuery, _ := os.ReadFile(databasePath + "/triggers.sql")
+	_, err = conn.Exec(context.Background(), string(triggersQuery))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+}
+
+func CreateIndexes() {
+	conn := Conn
+	functionsQuery, _ := os.ReadFile(databasePath + "/indexes.sql")
+	_, err := conn.Exec(context.Background(), string(functionsQuery))
+	if err != nil {
+		fmt.Println(err.Error() + "1")
+		return
+	}
 }

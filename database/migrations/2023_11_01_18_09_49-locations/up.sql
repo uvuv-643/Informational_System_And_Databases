@@ -1,7 +1,7 @@
 CREATE TABLE locations (
     id serial unique,
-    street varchar(255),
-    house varchar(255),
-    district_id integer,
+    street varchar(255) NOT NULL,
+    house varchar(255) NOT NULL,
+    district_id integer NOT NULL,
     FOREIGN KEY (district_id) REFERENCES districts(id)
 );
