@@ -1,0 +1,33 @@
+.Voting {
+  &__Wrapper {
+    padding-top: 100px;
+    display: flex;
+    justify-content: space-between;
+  }
+  &__Content {
+    width: 36%;
+    margin-top: 70px;
+  }
+  &__Image {
+    width: 53%;
+    border-radius: 50px;
+    overflow: hidden;
+    img {
+      width: 100%;
+    }
+  }
+  &__Status {
+    font-size: 18px;
+  }
+  h4 {
+    margin-bottom: 5px;
+  }
+  &__Buttons {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    button {
+      margin-right: 10px;
+    }
+  }
+}

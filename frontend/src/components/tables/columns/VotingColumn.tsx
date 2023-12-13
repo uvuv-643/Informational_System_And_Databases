@@ -1,8 +1,12 @@
 import React from 'react'
-import {VotingItem} from "../../../data/interfaces";
+import {UserItem, VotingItem} from "../../../data/interfaces";
+import {Button} from "antd";
+import {ROLE} from "../../../data/enums";
+import {PlusCircleFilled, PlusOutlined} from "@ant-design/icons";
 
 interface VotingProps {
-    voting: VotingItem | null
+    voting: VotingItem | null,
+    user : UserItem | null,
 }
 
 function VotingColumn(props: VotingProps) {
@@ -13,7 +17,14 @@ function VotingColumn(props: VotingProps) {
         )
     }
     return (
-        <>Нет голосования</>
+        <div>
+            <div>Нет голосования</div>
+            {
+                props.user?.roles?.includes(ROLE.ADMIN) && (
+                    <Button type="primary">Добавить</Button>
+                )
+            }
+        </div>
     )
 
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import {Table} from "antd";
-import {JobItem, LocationItem, OrderItem, PhotoItem, VotingItem} from "../../data/interfaces";
+import {JobItem, LocationItem, OrderItem, PhotoItem, UserItem, VotingItem} from "../../data/interfaces";
 import LocationColumn from "./columns/LocationColumn";
 import VotingColumn from "./columns/VotingColumn";
 import JobColumn from "./columns/JobColumn";
@@ -76,7 +76,11 @@ const data: OrderItem[] = [
     },
 ];
 
-function OwnOrdersTable() {
+interface OwnOrdersTableProps {
+    user : UserItem | null
+}
+
+function OwnOrdersTable(props : OwnOrdersTableProps) {
 
     const columns = [
         {
@@ -97,7 +101,7 @@ function OwnOrdersTable() {
             dataIndex: 'voting',
             key: 'voting',
             render: (voting: VotingItem | null) => {
-                return <VotingColumn voting={voting} />
+                return <VotingColumn voting={voting} user={props.user} />
             }
         },
         {
@@ -105,7 +109,7 @@ function OwnOrdersTable() {
             dataIndex: 'jobs',
             key: 'jobs',
             render: (jobs: JobItem[]) => {
-                return <JobColumn jobs={jobs} />
+                return <JobColumn jobs={jobs} user={props.user} />
             }
         },
         {
@@ -121,7 +125,7 @@ function OwnOrdersTable() {
             dataIndex: 'id',
             key: 'id',
             render: () => {
-                return <ActionsColumn />
+                return <ActionsColumn user={props.user} />
             }
         },
     ];

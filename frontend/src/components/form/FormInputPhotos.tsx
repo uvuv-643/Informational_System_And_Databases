@@ -1,33 +1,23 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import {Button, Upload} from "antd";
-import {FormDataType} from "../../data/interfaces";
 import {UploadOutlined} from "@ant-design/icons";
 import {API_URL} from "../../data/variables";
 import axios from "axios";
 
-const uuid = require('uuid')
-
-interface FormInputTextProps {
-    data: FormDataType,
-    id: string,
-    updateFormData: (k: string, v: any) => void
+interface FormInputPhotosProps {
+    orderId : string
 }
 
-function FormInputPhotos(props: FormInputTextProps) {
-
-    const [orderId, setOrderId] = useState<string>('')
-    useEffect(() => {
-        setOrderId(uuid.v4())
-    }, []);
+function FormInputPhotos(props : FormInputPhotosProps) {
 
     const handleRemoveFile = async (file: any): Promise<boolean> => {
-        const response = await axios.delete(API_URL + 'photo/' + orderId + '/' + file.uid);
+        const response = await axios.delete(API_URL + 'photo/' + props.orderId + '/' + file.uid);
         return response.status === 200;
     }
 
     return (
-        <div className="Form__Input" key={props.id}>
-            <label htmlFor={props.id}>Добавьте несколько фотографий</label>
+        <div className="Form__Input">
+            <label>Добавьте несколько фотографий</label>
             <p>Данные о расположении будут взяты с фотографий, поэтому убедитесь в следующем:</p>
             <ul>
                 <li>Все фотографии сделаны на мобильное устройство</li>
@@ -36,8 +26,10 @@ function FormInputPhotos(props: FormInputTextProps) {
             </ul>
             <Upload
                 action={(file : any) => {
-                    return API_URL + 'photo/' + orderId + '/' + file.uid
+                    return API_URL + 'photo/' + props.orderId + '/' + file.uid
                 }}
+                multiple={true}
+                withCredentials={true}
                 onRemove={handleRemoveFile}
                 listType="picture"
                 defaultFileList={[]}

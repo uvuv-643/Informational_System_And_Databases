@@ -10,7 +10,10 @@ export interface VotingItem {
     id: number,
     status: string,
     for: number,
-    against: number
+    against: number,
+    order ?: {
+        description : string
+    }
 }
 
 export interface JobItem {

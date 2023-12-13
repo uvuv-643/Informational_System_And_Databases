@@ -1,15 +1,16 @@
 import React from 'react'
 import {Button, message, Popconfirm} from "antd";
 import {DeleteFilled} from "@ant-design/icons";
+import {UserItem} from "../../../data/interfaces";
+import {ROLE} from "../../../data/enums";
 
 interface ActionsProps {
-
+    user : UserItem | null
 }
 
 function ActionsColumn(props : ActionsProps) {
     return (
         <div className="table-actions">
-            <Button type="primary" onClick={() => {}} >Редактировать</Button>
             <Popconfirm
                 placement="left"
                 title={"Удалить заявление"}

@@ -1,16 +1,29 @@
-import React, {useState} from 'react'
-import {Button} from "antd";
-import {FormDataType} from "../data/interfaces";
+import React, {useEffect, useState} from 'react'
+import {Button, message} from "antd";
+import {FormDataType, UserItem} from "../data/interfaces";
 import {useNavigate} from "react-router-dom";
 import FormInputText from "../components/form/FormInputText";
 import FormInputPhotos from "../components/form/FormInputPhotos";
+import axios from "axios";
+import {API_URL} from "../data/variables";
+
+const uuid = require('uuid')
 
 interface FormDataOrder {
     description: FormDataType,
     photos: FormDataType,
 }
 
-function OrderCreate() {
+interface OrderCreateProps {
+    changeUser: (user: UserItem | null) => void
+}
+
+function OrderCreate(props: OrderCreateProps) {
+
+    const [orderId, setOrderId] = useState<string>('')
+    useEffect(() => {
+        setOrderId(uuid.v4())
+    }, []);
 
     const navigate = useNavigate()
     const [formData, setFormData] = useState<FormDataOrder>({
@@ -32,6 +45,31 @@ function OrderCreate() {
         setFormData(copyFormData)
     }
 
+    const handleSubmitOrder = () => {
+        axios.post(API_URL + 'order', {
+            orderId: orderId
+        }).then(response => {
+            if (response.status === 200 && response.data) {
+                if (response.data.success) {
+                    message.success('Заявка успешно создана. Ожидайте рассмотрения.')
+                        .then(() => {
+                            navigate('/')
+                        })
+                } else {
+                    message.error(response.data.message)
+                }
+            }
+        }).catch((error) => {
+            if (error.status === 401 || error.status === 403) {
+                props.changeUser(null)
+                message.error('Произошла ошибка при добавлении. Авторизуйтесь повторно в системе', 2)
+                    .then(() => {
+                        navigate('/')
+                    })
+            }
+        })
+    }
+
     return (
         <div className="Form">
             <div className="Form__Wrapper">
@@ -40,15 +78,15 @@ function OrderCreate() {
                     Object.keys(formData).map((key) => {
                         let type = formData[key as keyof FormDataOrder].type
                         if (type === 'string') {
-                            return <FormInputText id={key} data={formData[key as keyof FormDataOrder]} updateFormData={updateFormData}/>
+                            return <FormInputText id={key} data={formData[key as keyof FormDataOrder]}
+                                                  updateFormData={updateFormData}/>
                         } else if (type === 'photos') {
-                            return <FormInputPhotos id={key} data={formData[key as keyof FormDataOrder]} updateFormData={updateFormData}/>
+                            return <FormInputPhotos orderId={orderId}/>
                         }
                     })
                 }
                 <div className="Login__Button">
-                    <Button size="middle" type="primary" onClick={() => {
-                    }}>Отправить заявление</Button>
+                    <Button size="middle" type="primary" onClick={handleSubmitOrder}>Отправить заявление</Button>
                 </div>
 
             </div>

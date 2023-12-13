@@ -24,7 +24,7 @@ function Orders(props : OrdersProps) {
     if (props.user === null) {
         return (
             <div className="Orders">
-                <OwnOrdersTable />
+                <OwnOrdersTable user={props.user} />
             </div>
         )
     }
