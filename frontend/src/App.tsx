@@ -15,6 +15,7 @@ import Login from "./routes/Login";
 import {UserItem} from "./data/interfaces";
 import Register from "./routes/Register";
 import Orders from "./routes/Orders";
+import OrderCreate from "./routes/OrderCreate";
 
 
 function App() {
@@ -32,12 +33,7 @@ function App() {
                 icon: <HomeOutlined />,
             },
             {
-                label: 'Мои заявления',
-                key: '/my-orders',
-                icon: <UserOutlined/>,
-            },
-            {
-                label: 'Все заявления',
+                label: 'Заявления',
                 key: '/orders',
                 icon: <BarsOutlined/>,
             },
@@ -89,6 +85,10 @@ function App() {
         {
             path: "/orders",
             element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Orders user={user}/></RouterWrapper>,
+        },
+        {
+            path: "/orders/create",
+            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><OrderCreate /></RouterWrapper>,
         },
     ]);
 

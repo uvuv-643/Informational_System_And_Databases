@@ -1,6 +1,5 @@
 import React from 'react'
-import {Button, message, Popconfirm, Table} from "antd";
-import {DeleteFilled} from "@ant-design/icons";
+import {Table} from "antd";
 import {JobItem, LocationItem, OrderItem, PhotoItem, VotingItem} from "../../data/interfaces";
 import LocationColumn from "./columns/LocationColumn";
 import VotingColumn from "./columns/VotingColumn";
@@ -37,8 +36,6 @@ const data: OrderItem[] = [
         voting: {
             id: 15,
             status: 'закончено',
-            startedAt: new Date(),
-            finishedAt: new Date(),
             for: 167,
             against: 7
         },
@@ -55,8 +52,6 @@ const data: OrderItem[] = [
         voting: {
             id: 15,
             status: 'закончено',
-            startedAt: new Date(),
-            finishedAt: new Date(),
             for: 167,
             against: 7
         },
@@ -64,14 +59,10 @@ const data: OrderItem[] = [
             {
                 id: 15,
                 status: 'закончено',
-                startedAt: new Date(),
-                finishedAt: new Date(),
             },
             {
                 id: 18,
                 status: 'в процессе',
-                startedAt: new Date(),
-                finishedAt: new Date(),
             },
         ],
         photos: [
@@ -113,7 +104,7 @@ function OwnOrdersTable() {
             title: 'Работы по заявке',
             dataIndex: 'jobs',
             key: 'jobs',
-            render: (jobs: JobItem[], record: OrderItem) => {
+            render: (jobs: JobItem[]) => {
                 return <JobColumn jobs={jobs} />
             }
         },
@@ -121,7 +112,7 @@ function OwnOrdersTable() {
             title: 'Фотографии',
             dataIndex: 'photos',
             key: 'photos',
-            render: (photos: PhotoItem[], record: OrderItem) => {
+            render: (photos: PhotoItem[]) => {
                 return <PhotoColumn photos={photos} />
             }
         },

@@ -2,6 +2,7 @@
 @import 'header';
 @import 'home';
 @import 'auth';
+@import 'form';
 
 .container {
   max-width: 1200px;
@@ -16,6 +17,11 @@
 
 .ant-table-cell {
   vertical-align: top;
+  a {
+    display: block;
+    line-height: 16px;
+    margin-bottom: 15px;
+  }
 }
 
 .table-photos {

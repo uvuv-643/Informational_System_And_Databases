@@ -1,7 +1,7 @@
-# Api for frontend
+# Required API for frontend
 
 
-### /api/login
+### ```GET``` /api/login
 Accept
 
 ```json
@@ -22,3 +22,74 @@ Returns
   }
 }
 ```
+
+
+### ```GET``` /api/orders/my
+Accept
+
+```json
+{
+  "page": 1,
+  "orderBy": "desc",
+  "orderByColumn": "description"
+}
+```
+
+Returns
+
+```json
+{
+  "orders": [
+    {
+      "description": "string",
+      "location": {
+        "street": "string",
+        "house": "string",
+        "district": "string"
+      },
+      "voting": {
+        "id": 1,
+        "status": "string",
+        "for": 15,
+        "against": 7
+      },
+      "jobs": [
+        {
+          "id": 1,
+          "status": "в процессе"
+        }
+      ],
+      "photos": [
+        {
+          "path": "string"
+        }
+      ]
+    }
+  ]
+}
+```
+
+
+
+### ```POST``` /api/photos/{orderId}/{photoId}
+
+Returns
+
+```json
+{
+  "success": true
+}
+```
+
+
+### ```DELETE``` /api/photos/{orderId}/{photoId}
+
+Returns
+
+```json
+{
+  "success": true
+}
+```
+
+

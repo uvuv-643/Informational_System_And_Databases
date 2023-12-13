@@ -9,8 +9,6 @@ export interface LocationItem {
 export interface VotingItem {
     id: number,
     status: string,
-    startedAt: Date,
-    finishedAt: Date,
     for: number,
     against: number
 }
@@ -18,8 +16,6 @@ export interface VotingItem {
 export interface JobItem {
     id: number,
     status: string,
-    startedAt: Date,
-    finishedAt: Date,
 }
 
 export interface PhotoItem {
@@ -39,4 +35,11 @@ export interface UserItem {
     email : string,
     district : string,
     roles : ROLE[],
+}
+
+
+export interface FormDataType {
+    type : string,
+    value : any,
+    label : string
 }
