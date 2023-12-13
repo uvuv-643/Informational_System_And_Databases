@@ -1,8 +1,8 @@
 # Required API for frontend
 
 
-### ```GET``` /api/login
-Accept
+### ```POST``` /api/login
+Accepts
 
 ```json
 {
@@ -24,16 +24,34 @@ Returns
 ```
 
 
-### ```GET``` /api/orders/my
-Accept
+### ```POST``` /api/register
+Accepts
 
 ```json
 {
-  "page": 1,
-  "orderBy": "desc",
-  "orderByColumn": "description"
+  "email": "string",
+  "name": "string",
+  "password": "string",
+  "district_id": 1
 }
 ```
+
+Returns
+```json
+{
+  "user": {
+    "name" : "string",
+    "email" : "string",
+    "district" : "string",
+    "roles" : ["0 - user, 1 - admin"]
+  }
+}
+```
+
+
+### ```GET``` /api/orders
+
+В случае, если запрос сделал администратор, возвращает все заказы. Если пользователь, то только его.
 
 Returns
 
@@ -72,7 +90,10 @@ Returns
 
 ### ```POST``` /api/order/
 
-Accept
+Проверяем расположение всех фото, считаем их среднее значение.
+Если фото были сделаны в различных местах, возвращаем ошибку.
+
+Accepts
 
 ```json
 {
@@ -85,10 +106,44 @@ Returns
 
 ```json
 {
-  "success": true
+  "success": true,
+  "message": "string"
 }
 ```
 
+### ```POST``` /api/votings/{orderId}
+
+Запускаем голосование по заданной заявке
+
+Returns
+
+```json
+{
+  "success": true,
+  "message": "string"
+}
+```
+
+### ```POST``` /api/jobs/{orderId}
+
+Добавляем работу к уже созданной заявке
+
+Accepts
+
+```json
+{
+  "users": [1, 6, 9]
+}
+```
+
+Returns
+
+```json
+{
+  "success": true,
+  "message": "string"
+}
+```
 
 
 ### ```POST``` /api/photos/{orderId}/{photoId}

@@ -22,7 +22,7 @@ function JobColumn(props: JobProps) {
                 <div>
                     {
                         props.user?.roles?.includes(ROLE.ADMIN) && (
-                            <Button type="primary">Добавить</Button>
+                            <Button size="small" type="primary">Добавить</Button>
                         )
                     }
                 </div>
@@ -37,7 +37,7 @@ function JobColumn(props: JobProps) {
             <div>
                 {
                     props.user?.roles?.includes(ROLE.ADMIN) && (
-                        <Button type="primary">Добавить</Button>
+                        <Button size="small" type="primary">Добавить</Button>
                     )
                 }
             </div>

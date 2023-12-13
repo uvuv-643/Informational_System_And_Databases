@@ -11,7 +11,7 @@ interface RegisterProps {
 }
 
 interface SelectDistrictInterface {
-    value : string,
+    value : number,
     label : string
 }
 
@@ -19,11 +19,10 @@ function Register(props : RegisterProps) {
 
     const navigate = useNavigate()
     const [name, setName] = useState<string>('')
-    const [district, setDistrict] = useState<string>('')
+    const [district, setDistrict] = useState<number>(-1)
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [passwordConfirmation, setPasswordConfirmation] = useState<string>('')
-
 
     const [districts, setDistricts] = useState<SelectDistrictInterface[]>([])
 
@@ -34,8 +33,8 @@ function Register(props : RegisterProps) {
                     if (Array.isArray(response.data.districts)) {
                         setDistricts(response.data.districts.map((district : any) => {
                             return {
-                                label: district.id,
-                                value: district.title
+                                label: district.title,
+                                value: district.id
                             }
                         }))
                     }
@@ -60,6 +59,7 @@ function Register(props : RegisterProps) {
             'name': name,
             'email': email,
             'password': password,
+            'district_id': district
         }).then(response => {
             if (response.status === 200 && response.data) {
                 props.changeUser(response.data.user as UserItem)
@@ -86,7 +86,7 @@ function Register(props : RegisterProps) {
                 </div>
                 <div className="Login__Input">
                     <label htmlFor="email">Выберите ваш район</label>
-                    <Select value={district} options={districts}></Select>
+                    <Select options={districts}></Select>
                 </div>
                 <div className="Login__Input">
                     <label htmlFor="password">Введите ваш пароль</label>
