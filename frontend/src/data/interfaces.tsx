@@ -1,3 +1,5 @@
+import {ROLE} from "./enums";
+
 export interface LocationItem {
     street: string,
     house: string,
@@ -30,4 +32,11 @@ export interface OrderItem {
     voting: VotingItem | null,
     jobs: JobItem[],
     photos: PhotoItem[],
+}
+
+export interface UserItem {
+    name : string,
+    email : string,
+    district : string,
+    roles : ROLE[],
 }

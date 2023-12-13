@@ -1,8 +1,9 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {Button} from "antd";
 import {Link} from "react-router-dom";
 
 function Home() {
+
     return (
         <div>
             <div className="Home__Header">
@@ -24,8 +25,8 @@ function Home() {
                 </div>
             </div>
         </div>
-
     )
+
 }
 
 export default Home

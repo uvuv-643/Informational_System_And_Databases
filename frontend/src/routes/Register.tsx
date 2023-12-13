@@ -6,17 +6,19 @@ import {UserItem} from "../data/interfaces";
 import {Link, useNavigate} from "react-router-dom";
 import {isValidEmail} from "../utils/data";
 
-interface LoginProps {
+interface RegisterProps {
     changeUser: (user : UserItem) => void
 }
 
-function Login(props : LoginProps) {
+function Register(props : RegisterProps) {
 
     const navigate = useNavigate()
+    const [name, setName] = useState<string>('')
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
+    const [passwordConfirmation, setPasswordConfirmation] = useState<string>('')
 
-    const handleLogin = () => {
+    const handleRegister = () => {
         if (!isValidEmail(email)) {
             message.error('Введен некорректный e-mail.')
             return
@@ -25,13 +27,18 @@ function Login(props : LoginProps) {
             message.error('Слишком слабый пароль.')
             return
         }
-        axios.post(API_URL + '/login', {
+        if (password !== passwordConfirmation) {
+            message.error('Пароли не совпадают')
+            return
+        }
+        axios.post(API_URL + '/register', {
+            'name': name,
             'email': email,
             'password': password,
         }).then(response => {
             if (response.status === 200 && response.data) {
                 props.changeUser(response.data.user as UserItem)
-                message.success('Авторизация прошла успешно', 1).then(() => {
+                message.success('Регистрация прошла успешно', 1).then(() => {
                     navigate('/')
                 })
             }
@@ -41,7 +48,11 @@ function Login(props : LoginProps) {
     return (
         <div className="Login">
             <div className="Login__Wrapper">
-                <h1>Войти в аккаунт</h1>
+                <h1>Регистрация</h1>
+                <div className="Login__Input">
+                    <label htmlFor="name">Введите ваше имя</label>
+                    <Input value={name} onChange={(event) => setName(event.target.value)} size="large" type="text" id="name" placeholder="Введите ваше имя..."/>
+                </div>
                 <div className="Login__Input">
                     <label htmlFor="email">Введите ваш e-mail</label>
                     <Input value={email} onChange={(event) => setEmail(event.target.value)} size="large" type="email" id="email" placeholder="Введите email..."/>
@@ -50,17 +61,20 @@ function Login(props : LoginProps) {
                     <label htmlFor="password">Введите ваш пароль</label>
                     <Input value={password} onChange={(event) => setPassword(event.target.value)}  size="large" type="password" id="password" placeholder="Введите пароль..."/>
                 </div>
+                <div className="Login__Input">
+                    <label htmlFor="password">Повторите ваш пароль</label>
+                    <Input value={passwordConfirmation} onChange={(event) => setPasswordConfirmation(event.target.value)}  size="large" type="password" id="password_confirmation" placeholder="Введите пароль..."/>
+                </div>
                 <p>
-                    Ещё нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
+                    Уже есть аккаунт? <Link to="/login">Авторизоваться</Link>
                 </p>
                 <div className="Login__Button">
-                    <Button size="middle" type="primary" onClick={handleLogin}>Войти</Button>
+                    <Button size="middle" type="primary" onClick={handleRegister}>Зарегистрироваться</Button>
                 </div>
-
             </div>
         </div>
     )
 
 }
 
-export default Login
+export default Register

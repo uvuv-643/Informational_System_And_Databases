@@ -2,42 +2,76 @@ import React, {useEffect, useState} from 'react'
 import {createBrowserRouter, RouterProvider, useLocation} from "react-router-dom";
 import Home from "./routes/Home";
 import {MenuProps} from "antd";
-import {BarsOutlined, LogoutOutlined, MailOutlined, ThunderboltOutlined, UserOutlined} from "@ant-design/icons";
+import {
+    BarsOutlined,
+    HomeOutlined, LoginOutlined,
+    LogoutOutlined,
+    MailOutlined,
+    ThunderboltOutlined,
+    UserOutlined
+} from "@ant-design/icons";
 import RouterWrapper from "./RouterWrapper";
 import Login from "./routes/Login";
-
-const items: MenuProps['items'] = [
-    {
-        label: 'Мои заявления',
-        key: '/my-orders',
-        icon: <UserOutlined/>,
-    },
-    {
-        label: 'Все заявления',
-        key: '/orders',
-        icon: <BarsOutlined/>,
-    },
-    {
-        label: 'Голосования',
-        key: '/votings',
-        icon: <ThunderboltOutlined/>,
-    },
-    {
-        label: 'Чат',
-        key: '/chat',
-        icon: <MailOutlined/>,
-    },
-    {
-        label: 'Выйти из аккаунта',
-        key: '/logout',
-        icon: <LogoutOutlined/>,
-    },
-];
+import {UserItem} from "./data/interfaces";
+import Register from "./routes/Register";
+import Orders from "./routes/Orders";
 
 
 function App() {
 
+    const [items, setItems] = useState<MenuProps['items'] >([])
+    const [user, setUser] = useState<UserItem | null>(null)
     const [currentMenu, setCurrentMenu] = useState<string>('')
+
+    useEffect(() => {
+        let currentItems : MenuProps['items'] = []
+        currentItems = currentItems.concat([
+            {
+                label: 'Главная',
+                key: '/',
+                icon: <HomeOutlined />,
+            },
+            {
+                label: 'Мои заявления',
+                key: '/my-orders',
+                icon: <UserOutlined/>,
+            },
+            {
+                label: 'Все заявления',
+                key: '/orders',
+                icon: <BarsOutlined/>,
+            },
+            {
+                label: 'Голосования',
+                key: '/votings',
+                icon: <ThunderboltOutlined/>,
+            },
+            {
+                label: 'Чат',
+                key: '/chat',
+                icon: <MailOutlined/>,
+            },
+        ])
+        if (user !== null) {
+            currentItems = currentItems.concat([
+                {
+                    label: 'Выйти из аккаунта',
+                    key: '/logout',
+                    icon: <LogoutOutlined/>,
+                },
+            ])
+        } else {
+            currentItems = currentItems.concat([
+                {
+                    label: 'Авторизоваться',
+                    key: '/login',
+                    icon: <LoginOutlined/>,
+                },
+            ])
+        }
+        setItems(currentItems)
+    }, [user]);
+
 
     const router = createBrowserRouter([
         {
@@ -46,15 +80,15 @@ function App() {
         },
         {
             path: "/login",
-            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Login /></RouterWrapper>,
+            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Login changeUser={setUser}/></RouterWrapper>,
         },
         {
-            path: "/sign-up",
-            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Login /></RouterWrapper>,
+            path: "/register",
+            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Register changeUser={setUser} /></RouterWrapper>,
         },
         {
             path: "/orders",
-            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Home /></RouterWrapper>,
+            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Orders user={user}/></RouterWrapper>,
         },
     ]);
 

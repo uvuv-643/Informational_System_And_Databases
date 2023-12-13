@@ -25,6 +25,13 @@ function Header(props : HeaderPropsInterface) {
     useEffect(() => {
         let pathName = location.pathname
         props.items?.forEach((item) => {
+            if (typeof item?.key === 'string' && item?.key === '/') {
+                if (pathName === item?.key) {
+                    props.setCurrentMenu(item?.key)
+                    pathName = item?.key
+                }
+                return
+            }
             if (typeof item?.key === 'string' && pathName.includes(item?.key)) {
                 props.setCurrentMenu(item?.key)
                 pathName = item?.key

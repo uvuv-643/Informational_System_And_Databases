@@ -13,7 +13,7 @@
     font-size: 30px;
   }
   &__Input {
-    margin-top: 30px;
+    margin-top: 20px;
     width: 100%;
     label {
       display: inline-block;
@@ -23,6 +23,14 @@
   }
   &__Button {
     width: 100%;
-    margin-top: 30px;
+    margin-top: 20px;
+  }
+  p {
+    margin-top: 20px;
+    font-size: 14px;
+    a {
+      color: #1677ff;
+      text-decoration: none;
+    }
   }
 }
