@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react'
 import {UserItem, VotingItem} from "../data/interfaces";
-import {Button, Spin, Tag} from "antd";
+import {Button, message, Spin, Tag} from "antd";
 import axios from "axios";
 import {API_URL} from "../data/variables";
 import {Link, useNavigate, useSearchParams} from "react-router-dom";
 
 interface VotingProps {
-    user: UserItem | null
+    user: UserItem | null,
+    changeUser : (user : UserItem | null) => void
 }
 
 function Voting(props: VotingProps) {
@@ -16,7 +17,7 @@ function Voting(props: VotingProps) {
     const [searchParams, setSearchParams] = useSearchParams();
     const [voting, setVoting] = useState<VotingItem | null>({
         id: 15,
-        status: 'завершено',
+        status: 'голос',
         for: 167,
         against: 7,
         order: {
@@ -30,8 +31,16 @@ function Voting(props: VotingProps) {
     //                 if (response.status === 200 && response.data) {
     //                     setVoting(response.data.voting as VotingItem)
     //                 }
-    //             }).catch(() => {
-    //             window.location.replace('/')
+    //             }).catch((error) => {
+    //             if (error.status === 401 || error.status === 403) {
+    //                 props.changeUser(null)
+    //                 message.error('Произошла ошибка при получении данных. Авторизуйтесь повторно в системе', 2)
+    //                     .then(() => {
+    //                         window.location.replace('/')
+    //                     })
+    //             } else {
+    //                 window.location.replace('/')
+    //             }
     //         })
     //     }, 1000)
     // }, []);
@@ -48,7 +57,21 @@ function Voting(props: VotingProps) {
                                  style={{fontSize: 24, padding: '7px 15px'}}>За: {voting.for}, против: {voting.against}</Tag>
                         </h1>
                     </div>
-                    <Link to="/orders"><Button type="primary" size="middle">Вернуться назад</Button></Link>
+                    <Link to="/votings"><Button type="primary" size="middle">Вернуться назад</Button></Link>
+                </div>
+            </>
+        )
+    }
+    if (voting.status === 'голос') {
+        return (
+            <>
+                <div className="Voting">
+                    <div className="Voting__Wrapper">
+                        <h1>Вы уже отдали свой голос, спасибо! <Tag color={"success"}
+                                                            style={{fontSize: 24, padding: '7px 15px'}}>За: {voting.for}, против: {voting.against}</Tag>
+                        </h1>
+                    </div>
+                    <Link to="/votings"><Button type="primary" size="middle">Вернуться назад</Button></Link>
                 </div>
             </>
         )

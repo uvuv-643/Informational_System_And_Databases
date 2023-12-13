@@ -17,6 +17,7 @@ import Register from "./routes/Register";
 import Orders from "./routes/Orders";
 import OrderCreate from "./routes/OrderCreate";
 import Voting from "./routes/Voting";
+import Votings from "./routes/Votings";
 
 
 function App() {
@@ -92,8 +93,12 @@ function App() {
             element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><OrderCreate changeUser={setUser}/></RouterWrapper>,
         },
         {
+            path: "/votings/",
+            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Votings user={user} changeUser={setUser}/></RouterWrapper>,
+        },
+        {
             path: "/votings/:id",
-            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Voting user={user}/></RouterWrapper>,
+            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Voting user={user} changeUser={setUser}/></RouterWrapper>,
         },
     ]);
 

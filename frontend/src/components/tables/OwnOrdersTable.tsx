@@ -7,7 +7,7 @@ import JobColumn from "./columns/JobColumn";
 import PhotoColumn from "./columns/PhotoColumn";
 import ActionsColumn from "./columns/ActionsColumn";
 
-const data: OrderItem[] = [
+export const data: OrderItem[] = [
     {
         description: 'haha',
         location: null,
@@ -34,7 +34,7 @@ const data: OrderItem[] = [
             district: 'г. Торез'
         },
         voting: {
-            id: 15,
+            id: 151,
             status: 'закончено',
             for: 167,
             against: 7
@@ -50,7 +50,7 @@ const data: OrderItem[] = [
             district: 'г. Торез'
         },
         voting: {
-            id: 15,
+            id: 157,
             status: 'закончено',
             for: 167,
             against: 7

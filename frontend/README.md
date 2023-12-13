@@ -70,6 +70,26 @@ Returns
 ```
 
 
+### ```POST``` /api/order/
+
+Accept
+
+```json
+{
+  "orderId": "string",
+  "description": "string"
+}
+```
+
+Returns
+
+```json
+{
+  "success": true
+}
+```
+
+
 
 ### ```POST``` /api/photos/{orderId}/{photoId}
 
@@ -92,4 +112,78 @@ Returns
 }
 ```
 
+### ```GET``` /api/votings/
 
+
+Returns
+
+```json
+{
+  "voting": {
+    "id": 15,
+    "status": "завершено | голос | string",
+    "for": 1,
+    "against": 2,
+    "order": {
+      "description": "string"
+    }  
+  }
+}
+```
+
+
+
+### ```GET``` /api/votings/{votingId}
+
+Получить информацию по голосованиям в текущем районе пользователя. 
+Нужно вернуть заявки в текущем районе пользователя.
+
+Returns
+
+```json
+{
+  "orders": [
+    {
+      "description": "string",
+      "location": {
+        "street": "string",
+        "house": "string",
+        "district": "string"
+      },
+      "voting": {
+        "id": 1,
+        "status": "string",
+        "for": 15,
+        "against": 7
+      },
+      "jobs": [
+        {
+          "id": 1,
+          "status": "в процессе"
+        }
+      ],
+      "photos": [
+        {
+          "path": "string"
+        }
+      ]
+    }
+  ]
+}
+```
+
+
+### ```GET``` /api/districts
+
+Returns
+
+```json
+{
+  "districts": [
+    {
+      "id": 12,
+      "title": "string"
+    }
+  ]
+}
+```

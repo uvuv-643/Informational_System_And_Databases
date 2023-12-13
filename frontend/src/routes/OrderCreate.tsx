@@ -47,7 +47,8 @@ function OrderCreate(props: OrderCreateProps) {
 
     const handleSubmitOrder = () => {
         axios.post(API_URL + 'order', {
-            orderId: orderId
+            orderId: orderId,
+            description: formData['description'].value
         }).then(response => {
             if (response.status === 200 && response.data) {
                 if (response.data.success) {

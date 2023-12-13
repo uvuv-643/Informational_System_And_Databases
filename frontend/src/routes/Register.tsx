@@ -1,5 +1,5 @@
-import React, {useState} from 'react'
-import {Button, Input, message} from "antd";
+import React, {useEffect, useState} from 'react'
+import {Button, Input, message, Select} from "antd";
 import axios from "axios";
 import {API_URL} from "../data/variables";
 import {UserItem} from "../data/interfaces";
@@ -10,13 +10,38 @@ interface RegisterProps {
     changeUser: (user : UserItem) => void
 }
 
+interface SelectDistrictInterface {
+    value : string,
+    label : string
+}
+
 function Register(props : RegisterProps) {
 
     const navigate = useNavigate()
     const [name, setName] = useState<string>('')
+    const [district, setDistrict] = useState<string>('')
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [passwordConfirmation, setPasswordConfirmation] = useState<string>('')
+
+
+    const [districts, setDistricts] = useState<SelectDistrictInterface[]>([])
+
+    useEffect(() => {
+        axios.get(API_URL + 'districts')
+            .then((response) => {
+                if (response.status === 200 && response.data?.districts) {
+                    if (Array.isArray(response.data.districts)) {
+                        setDistricts(response.data.districts.map((district : any) => {
+                            return {
+                                label: district.id,
+                                value: district.title
+                            }
+                        }))
+                    }
+                }
+            }).catch(() => {})
+    }, []);
 
     const handleRegister = () => {
         if (!isValidEmail(email)) {
@@ -31,7 +56,7 @@ function Register(props : RegisterProps) {
             message.error('Пароли не совпадают')
             return
         }
-        axios.post(API_URL + '/register', {
+        axios.post(API_URL + 'register', {
             'name': name,
             'email': email,
             'password': password,
@@ -51,19 +76,28 @@ function Register(props : RegisterProps) {
                 <h1>Регистрация</h1>
                 <div className="Login__Input">
                     <label htmlFor="name">Введите ваше имя</label>
-                    <Input value={name} onChange={(event) => setName(event.target.value)} size="large" type="text" id="name" placeholder="Введите ваше имя..."/>
+                    <Input value={name} onChange={(event) => setName(event.target.value)} size="large" type="text"
+                           id="name" placeholder="Введите ваше имя..."/>
                 </div>
                 <div className="Login__Input">
                     <label htmlFor="email">Введите ваш e-mail</label>
-                    <Input value={email} onChange={(event) => setEmail(event.target.value)} size="large" type="email" id="email" placeholder="Введите email..."/>
+                    <Input value={email} onChange={(event) => setEmail(event.target.value)} size="large" type="email"
+                           id="email" placeholder="Введите email..."/>
+                </div>
+                <div className="Login__Input">
+                    <label htmlFor="email">Выберите ваш район</label>
+                    <Select value={district} options={districts}></Select>
                 </div>
                 <div className="Login__Input">
                     <label htmlFor="password">Введите ваш пароль</label>
-                    <Input value={password} onChange={(event) => setPassword(event.target.value)}  size="large" type="password" id="password" placeholder="Введите пароль..."/>
+                    <Input value={password} onChange={(event) => setPassword(event.target.value)} size="large"
+                           type="password" id="password" placeholder="Введите пароль..."/>
                 </div>
                 <div className="Login__Input">
                     <label htmlFor="password">Повторите ваш пароль</label>
-                    <Input value={passwordConfirmation} onChange={(event) => setPasswordConfirmation(event.target.value)}  size="large" type="password" id="password_confirmation" placeholder="Введите пароль..."/>
+                    <Input value={passwordConfirmation}
+                           onChange={(event) => setPasswordConfirmation(event.target.value)} size="large"
+                           type="password" id="password_confirmation" placeholder="Введите пароль..."/>
                 </div>
                 <p>
                     Уже есть аккаунт? <Link to="/login">Авторизоваться</Link>
