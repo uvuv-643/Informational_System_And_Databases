@@ -18,6 +18,7 @@ import Orders from "./routes/Orders";
 import OrderCreate from "./routes/OrderCreate";
 import Voting from "./routes/Voting";
 import Votings from "./routes/Votings";
+import JobCreate from "./routes/JobCreate";
 
 
 function App() {
@@ -99,6 +100,10 @@ function App() {
         {
             path: "/votings/:id",
             element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Voting user={user} changeUser={setUser}/></RouterWrapper>,
+        },
+        {
+            path: "/jobs/create",
+            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><JobCreate user={user} changeUser={setUser}/></RouterWrapper>,
         },
     ]);
 

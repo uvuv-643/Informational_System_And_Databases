@@ -6,6 +6,7 @@ import FormInputText from "../components/form/FormInputText";
 import FormInputPhotos from "../components/form/FormInputPhotos";
 import axios from "axios";
 import {API_URL} from "../data/variables";
+import {handleUnauthorizedError} from "../utils/auth";
 
 const uuid = require('uuid')
 
@@ -61,13 +62,7 @@ function OrderCreate(props: OrderCreateProps) {
                 }
             }
         }).catch((error) => {
-            if (error.status === 401 || error.status === 403) {
-                props.changeUser(null)
-                message.error('Произошла ошибка при добавлении. Авторизуйтесь повторно в системе', 2)
-                    .then(() => {
-                        navigate('/')
-                    })
-            }
+            handleUnauthorizedError(error, props.changeUser)
         })
     }
 

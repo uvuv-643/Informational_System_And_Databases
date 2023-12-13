@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Button, Input, message, Select} from "antd";
 import axios from "axios";
 import {API_URL} from "../data/variables";
@@ -26,7 +26,11 @@ function Register(props : RegisterProps) {
 
     const [districts, setDistricts] = useState<SelectDistrictInterface[]>([])
 
+    const districtsRef = useRef(0)
+
     useEffect(() => {
+        if (districtsRef.current) return
+        districtsRef.current++
         axios.get(API_URL + 'districts')
             .then((response) => {
                 if (response.status === 200 && response.data?.districts) {

@@ -1,7 +1,6 @@
 # Required API for frontend
 
-
-### ```POST``` /api/login
+### 1. ```POST``` /api/login
 Accepts
 
 ```json
@@ -24,7 +23,7 @@ Returns
 ```
 
 
-### ```POST``` /api/register
+### 2. ```POST``` /api/register
 Accepts
 
 ```json
@@ -49,7 +48,7 @@ Returns
 ```
 
 
-### ```GET``` /api/orders
+### 3. ```GET``` /api/orders
 
 В случае, если запрос сделал администратор, возвращает все заказы. Если пользователь, то только его.
 
@@ -88,7 +87,7 @@ Returns
 ```
 
 
-### ```POST``` /api/order/
+### 4. ```POST``` /api/order/
 
 Проверяем расположение всех фото, считаем их среднее значение.
 Если фото были сделаны в различных местах, возвращаем ошибку.
@@ -111,7 +110,7 @@ Returns
 }
 ```
 
-### ```POST``` /api/votings/{orderId}
+### 5. ```POST``` /api/votings/{orderId}
 
 Запускаем голосование по заданной заявке
 
@@ -124,7 +123,7 @@ Returns
 }
 ```
 
-### ```POST``` /api/jobs/{orderId}
+### 6. ```POST``` /api/jobs/{orderId}
 
 Добавляем работу к уже созданной заявке
 
@@ -146,7 +145,7 @@ Returns
 ```
 
 
-### ```POST``` /api/photos/{orderId}/{photoId}
+### 7. ```POST``` /api/photos/{orderId}/{photoId}
 
 Returns
 
@@ -157,7 +156,7 @@ Returns
 ```
 
 
-### ```DELETE``` /api/photos/{orderId}/{photoId}
+### 8. ```DELETE``` /api/photos/{orderId}/{photoId}
 
 Returns
 
@@ -167,7 +166,7 @@ Returns
 }
 ```
 
-### ```GET``` /api/votings/
+### 9. ```GET``` /api/votings/
 
 
 Returns
@@ -188,7 +187,7 @@ Returns
 
 
 
-### ```GET``` /api/votings/{votingId}
+### 10. ```GET``` /api/votings/{votingId}
 
 Получить информацию по голосованиям в текущем районе пользователя. 
 Нужно вернуть заявки в текущем районе пользователя.
@@ -228,7 +227,7 @@ Returns
 ```
 
 
-### ```GET``` /api/districts
+### 11. ```GET``` /api/districts
 
 Returns
 
@@ -236,9 +235,64 @@ Returns
 {
   "districts": [
     {
-      "id": 12,
+      "id": 1,
       "title": "string"
     }
+  ]
+}
+```
+
+
+
+### 12. ```GET``` /api/admins
+
+Returns
+
+```json
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "string"
+    }
+  ]
+}
+```
+
+
+### 13. ```GET``` /api/order/{orderId}
+
+Returns
+
+```json
+{
+  "order": [
+    {
+      "description": "string",
+      "location": {
+        "street": "string",
+        "house": "string",
+        "district": "string"
+      },
+      "voting": {
+        "id": 1,
+        "status": "string",
+        "for": 15,
+        "against": 7
+      },
+      "jobs": [
+        {
+          "id": 1,
+          "status": "в процессе"
+        }
+      ],
+      "photos": [
+        {
+          "path": "string"
+        }
+      ]
+    }
+    
   ]
 }
 ```

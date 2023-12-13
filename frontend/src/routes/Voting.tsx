@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {UserItem, VotingItem} from "../data/interfaces";
 import {Button, message, Spin, Tag} from "antd";
 import axios from "axios";
 import {API_URL} from "../data/variables";
 import {Link, useNavigate, useSearchParams} from "react-router-dom";
+import {handleUnauthorizedError} from "../utils/auth";
 
 interface VotingProps {
     user: UserItem | null,
@@ -13,6 +14,7 @@ interface VotingProps {
 function Voting(props: VotingProps) {
 
     const navigate = useNavigate()
+    const votingRef = useRef(0)
 
     const [searchParams, setSearchParams] = useSearchParams();
     const [voting, setVoting] = useState<VotingItem | null>({
@@ -24,26 +26,20 @@ function Voting(props: VotingProps) {
             description: "hahaha)"
         }
     })
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         axios.get(API_URL + 'votings/' + searchParams.get('id'))
-    //             .then(response => {
-    //                 if (response.status === 200 && response.data) {
-    //                     setVoting(response.data.voting as VotingItem)
-    //                 }
-    //             }).catch((error) => {
-    //             if (error.status === 401 || error.status === 403) {
-    //                 props.changeUser(null)
-    //                 message.error('Произошла ошибка при получении данных. Авторизуйтесь повторно в системе', 2)
-    //                     .then(() => {
-    //                         window.location.replace('/')
-    //                     })
-    //             } else {
-    //                 window.location.replace('/')
-    //             }
-    //         })
-    //     }, 1000)
-    // }, []);
+    useEffect(() => {
+        if (votingRef.current) return
+        votingRef.current++
+        setTimeout(() => {
+            axios.get(API_URL + 'votings/' + searchParams.get('id'))
+            .then(response => {
+                if (response.status === 200 && response.data) {
+                    setVoting(response.data.voting as VotingItem)
+                }
+            }).catch((error) => {
+                handleUnauthorizedError(error, props.changeUser)
+            })
+        }, 1000)
+    }, []);
 
     if (voting === null) {
         return <Spin fullscreen/>
@@ -81,7 +77,7 @@ function Voting(props: VotingProps) {
             <div className="Voting__Wrapper">
                 <div className="Voting__Content">
 
-                    <h1>{voting?.order?.description?.substr(0, 30)} <Tag color={"success"}
+                    <h1>{voting?.order?.description?.substring(0, 30)} <Tag color={"success"}
                                                                          style={{fontSize: 18}}>{voting?.status}</Tag>
                     </h1>
                     <div className="Voting__Votes">

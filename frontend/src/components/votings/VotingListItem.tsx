@@ -12,7 +12,7 @@ function VotingListItem(props : VotingListItemProps) {
     return (
         <div className="VotingListItem">
             <div className="VotingListItem__Description">
-                <h3>{ props.order.description.substr(0, 250) }</h3>
+                <h3>{ props.order.description.substring(0, 250) }</h3>
                 <h4>{ props.order.location?.district }, { props.order.location?.street }, { props.order.location?.house }</h4>
             </div>
             <div className="VotingListItem__Photos">

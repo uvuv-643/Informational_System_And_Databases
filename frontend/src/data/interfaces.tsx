@@ -19,6 +19,7 @@ export interface VotingItem {
 export interface JobItem {
     id: number,
     status: string,
+    users ?: string[]
 }
 
 export interface PhotoItem {

@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {OrderItem, UserItem} from "../data/interfaces";
 import VotingListItem from "../components/votings/VotingListItem";
 import {message, Spin} from "antd";
 import axios from "axios";
 import {API_URL} from "../data/variables";
 import {data} from "../components/tables/OwnOrdersTable";
+import {handleUnauthorizedError} from "../utils/auth";
 
 interface VotingsProps {
     changeUser: (user: UserItem | null) => void,
@@ -13,30 +14,26 @@ interface VotingsProps {
 
 function Votings(props: VotingsProps) {
 
+    const votingsRef = useRef(0)
+
     const [orders, setOrders] = useState<OrderItem[]>(data)
     const [fetched, setFetched] = useState<boolean>(true)
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         axios.get(API_URL + 'votings')
-    //             .then(response => {
-    //                 if (response.status === 200 && response.data) {
-    //                     setOrders(response.data.orders)
-    //                     setFetched(true)
-    //                 }
-    //             })
-    //             .catch((error) => {
-    //                 if (error.status === 401 || error.status === 403) {
-    //                     props.changeUser(null)
-    //                     message.error('Произошла ошибка при получении данных. Авторизуйтесь повторно в системе', 2)
-    //                         .then(() => {
-    //                             window.location.replace('/')
-    //                         })
-    //                 } else {
-    //                     window.location.replace('/')
-    //                 }
-    //             })
-    //     }, 1000)
-    // }, []);
+    useEffect(() => {
+        if (votingsRef.current) return
+        votingsRef.current++
+        setTimeout(() => {
+            axios.get(API_URL + 'votings')
+                .then(response => {
+                    if (response.status === 200 && response.data) {
+                        setOrders(response.data.orders)
+                        setFetched(true)
+                    }
+                })
+                .catch((error) => {
+                    handleUnauthorizedError(error, props.changeUser)
+                })
+        }, 1000)
+    }, []);
 
     if (!fetched) {
         return <Spin fullscreen/>

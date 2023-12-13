@@ -15,8 +15,15 @@ function JobColumn(props: JobProps) {
             <div>
                 {props.jobs.map((job, index) => {
                     return (
-                        <div key={index}><a rel="noreferrer" target="_blank" href={'/jobs/' + job.id}>Работа
-                            #{job.id}, {job.status}</a></div>
+                        <div className="JobItem">
+                            <div key={index}>Работа #{job.id}</div>
+                            {
+                                job.users && job.users.length &&
+                                (<span>Участники: { job.users?.map((user : string) => {
+                                    return <>{user}</>
+                                })}</span>)
+                            }
+                        </div>
                     )
                 })}
                 <div>

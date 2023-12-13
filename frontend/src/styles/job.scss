@@ -1,0 +1,20 @@
+.JobCreate {
+  width: 500px;
+  margin: auto;
+  button {
+    margin-top: 15px;
+  }
+  p {
+    margin-bottom: 30px;
+  }
+  label {
+    display: inline-block;
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+}
+.JobItem {
+  display: block;
+  line-height: 16px;
+  margin-bottom: 15px;
+}
