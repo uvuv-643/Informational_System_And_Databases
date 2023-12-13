@@ -1,0 +1,43 @@
+@import 'variables';
+@import 'header';
+@import 'home';
+@import 'auth';
+
+.container {
+  max-width: 1200px;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin: auto;
+}
+
+* {
+  font-family: Helvetica, sans-serif;
+}
+
+.ant-table-cell {
+  vertical-align: top;
+}
+
+.table-photos {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  div {
+    width: 100px;
+    flex: 0 0 100px;
+    padding-left: 8px;
+    padding-right: 7px;
+    padding-bottom: 8px;
+    img {
+      width: 100%;
+    }
+  }
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  button {
+    margin-right: 7px;
+  }
+}

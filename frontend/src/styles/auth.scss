@@ -1,0 +1,28 @@
+.Login {
+  display: flex;
+  justify-content: center;
+  &__Wrapper {
+    margin-top: 100px;
+    max-width: 500px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  h1 {
+    margin-bottom: 30px;
+    width: 100%;
+    font-size: 30px;
+  }
+  &__Input {
+    margin-top: 30px;
+    width: 100%;
+    label {
+      display: inline-block;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+  }
+  &__Button {
+    width: 100%;
+    margin-top: 30px;
+  }
+}
