@@ -7,15 +7,15 @@ import {Link, useNavigate} from "react-router-dom";
 import {isValidEmail} from "../utils/data";
 
 interface RegisterProps {
-    changeUser: (user : UserItem) => void
+    changeUser: (user: UserItem) => void
 }
 
 interface SelectDistrictInterface {
-    value : number,
-    label : string
+    value: number,
+    label: string
 }
 
-function Register(props : RegisterProps) {
+function Register(props: RegisterProps) {
 
     const navigate = useNavigate()
     const [name, setName] = useState<string>('')
@@ -31,11 +31,13 @@ function Register(props : RegisterProps) {
     useEffect(() => {
         if (districtsRef.current) return
         districtsRef.current++
+        console.log(API_URL + 'districts')
         axios.get(API_URL + 'districts')
             .then((response) => {
+                console.log(response)
                 if (response.status === 200 && response.data?.districts) {
                     if (Array.isArray(response.data.districts)) {
-                        setDistricts(response.data.districts.map((district : any) => {
+                        setDistricts(response.data.districts.map((district: any) => {
                             return {
                                 label: district.title,
                                 value: district.id
@@ -43,7 +45,8 @@ function Register(props : RegisterProps) {
                         }))
                     }
                 }
-            }).catch(() => {})
+            }).catch(() => {
+        })
     }, []);
 
     const handleRegister = () => {
@@ -64,13 +67,19 @@ function Register(props : RegisterProps) {
             'email': email,
             'password': password,
             'district_id': district
+        }, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json",
+            }
         }).then(response => {
             if (response.status === 200 && response.data) {
                 props.changeUser(response.data.user as UserItem)
-                message.success('Регистрация прошла успешно', 1).then(() => {
-                    navigate('/')
-                })
+                message.success('Регистрация прошла успешно', 1)
+                navigate('/')
             }
+        }).catch(error => {
+            message.error(error.response.data.error)
         })
     }
 
@@ -90,7 +99,7 @@ function Register(props : RegisterProps) {
                 </div>
                 <div className="Login__Input">
                     <label htmlFor="email">Выберите ваш район</label>
-                    <Select options={districts}></Select>
+                    <Select options={districts} onChange={(district) => setDistrict(district)}></Select>
                 </div>
                 <div className="Login__Input">
                     <label htmlFor="password">Введите ваш пароль</label>

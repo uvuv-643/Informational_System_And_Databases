@@ -19,6 +19,9 @@ import OrderCreate from "./routes/OrderCreate";
 import Voting from "./routes/Voting";
 import Votings from "./routes/Votings";
 import JobCreate from "./routes/JobCreate";
+import axios from "axios";
+import {API_URL} from "./data/variables";
+import Logout from "./routes/Logout";
 
 
 function App() {
@@ -27,7 +30,7 @@ function App() {
     const [user, setUser] = useState<UserItem | null>(null)
     const [currentMenu, setCurrentMenu] = useState<string>('')
 
-    useEffect(() => {
+    const loadMenu = () => {
         let currentItems : MenuProps['items'] = []
         currentItems = currentItems.concat([
             {
@@ -35,24 +38,19 @@ function App() {
                 key: '/',
                 icon: <HomeOutlined />,
             },
-            {
-                label: 'Заявления',
-                key: '/orders',
-                icon: <BarsOutlined/>,
-            },
-            {
-                label: 'Голосования',
-                key: '/votings',
-                icon: <ThunderboltOutlined/>,
-            },
-            {
-                label: 'Чат',
-                key: '/chat',
-                icon: <MailOutlined/>,
-            },
         ])
         if (user !== null) {
             currentItems = currentItems.concat([
+                {
+                    label: 'Заявления',
+                    key: '/orders',
+                    icon: <BarsOutlined/>,
+                },
+                {
+                    label: 'Голосования',
+                    key: '/votings',
+                    icon: <ThunderboltOutlined/>,
+                },
                 {
                     label: 'Выйти из аккаунта',
                     key: '/logout',
@@ -69,13 +67,40 @@ function App() {
             ])
         }
         setItems(currentItems)
+    }
+
+    useEffect(() => {
+
+        // axios.get(API_URL + 'orders',{
+        //     withCredentials: true,
+        // })
+
+        if (!user) {
+            axios.get(API_URL + 'user',{
+                withCredentials: true,
+            })
+                .then((response) => {
+                    if (response.status === 200) {
+                        setUser(response.data)
+                    }
+                })
+                .catch(error => {
+                    loadMenu()
+                })
+        }
+    }, [user]);
+
+    useEffect(() => {
+        if (user) {
+            loadMenu()
+        }
     }, [user]);
 
 
     const router = createBrowserRouter([
         {
             path: "/",
-            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Home /></RouterWrapper>,
+            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Home user={user} /></RouterWrapper>,
         },
         {
             path: "/login",
@@ -87,7 +112,7 @@ function App() {
         },
         {
             path: "/orders",
-            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Orders user={user}/></RouterWrapper>,
+            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Orders user={user} changeUser={setUser}/></RouterWrapper>,
         },
         {
             path: "/orders/create",
@@ -102,8 +127,12 @@ function App() {
             element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Voting user={user} changeUser={setUser}/></RouterWrapper>,
         },
         {
-            path: "/jobs/create",
+            path: "/jobs/create/:id",
             element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><JobCreate user={user} changeUser={setUser}/></RouterWrapper>,
+        },
+        {
+            path: "/logout",
+            element: <RouterWrapper setCurrentMenu={setCurrentMenu} currentMenu={currentMenu} items={items}><Logout user={user} changeUser={setUser}/></RouterWrapper>,
         },
     ]);
 

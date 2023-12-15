@@ -25,16 +25,19 @@ function Login(props : LoginProps) {
             message.error('Слишком слабый пароль.')
             return
         }
-        axios.post(API_URL + '/login', {
+        axios.post(API_URL + 'login', {
             'email': email,
             'password': password,
+        }, {
+            withCredentials: true,
         }).then(response => {
             if (response.status === 200 && response.data) {
                 props.changeUser(response.data.user as UserItem)
-                message.success('Авторизация прошла успешно', 1).then(() => {
-                    navigate('/')
-                })
+                message.success('Авторизация прошла успешно', 1)
+                navigate('/')
             }
+        }).catch(error => {
+            message.error(error.response.data.error)
         })
     }
 

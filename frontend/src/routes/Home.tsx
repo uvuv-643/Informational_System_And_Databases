@@ -1,9 +1,23 @@
-import React, {useEffect} from 'react'
-import {Button} from "antd";
+import React, {useEffect, useState} from 'react'
+import {Button, Spin} from "antd";
 import {Link} from "react-router-dom";
+import {UserItem} from "../data/interfaces";
 
-function Home() {
+interface HomeProps {
+    user : UserItem | null
+}
 
+function Home(props : HomeProps) {
+
+    const [fetch, setFetch] = useState<boolean>(true)
+
+    useEffect(() => {
+        setTimeout(() => setFetch(false), 1000)
+    }, []);
+
+    if (fetch) {
+        return <Spin fullscreen />
+    }
     return (
         <div>
             <div className="Home__Header">
@@ -13,12 +27,20 @@ function Home() {
                         Привет! Это умный помощник, и я помогу сделать жизнь в городе комфортнее.
                         Для начала выберите необходимое действие
                     </p>
-                    <div className="Home__Header__Buttons">
-                        <Link to={"/orders/create"}><Button type="primary">Подать заявление</Button></Link>
-                        <Link to={"/orders"}><Button type="primary">Просмотреть все заявки</Button></Link>
-                        <Link to={"/votings"}><Button type="primary">Проголосовать</Button></Link>
-                        <Link to={"/chat"}><Button type="primary">Связаться с поддержкой</Button></Link>
-                    </div>
+                    {
+                        props.user === null ? (
+                            <div className="Home__Header__Buttons">
+                                <Link to={"/login"}><Button type="primary">Авторизоваться</Button></Link>
+                                <Link to={"/register"}><Button type="primary">Зарегистрироваться</Button></Link>
+                            </div>
+                        ) : (
+                            <div className="Home__Header__Buttons">
+                                <Link to={"/orders/create"}><Button type="primary">Подать заявление</Button></Link>
+                                <Link to={"/votings"}><Button type="primary">Проголосовать</Button></Link>
+                                <Link to={"/orders"}><Button type="primary">Просмотреть все заявки</Button></Link>
+                            </div>
+                        )
+                    }
                 </div>
                 <div className="Home__Header__Image">
                     <img src="images/header.jpg" alt="#"/>

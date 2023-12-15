@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {OrderItem, UserItem} from "../data/interfaces";
-import {useNavigate, useSearchParams} from "react-router-dom";
+import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import axios from "axios";
 import {API_URL} from "../data/variables";
 import {Button, message, Select, Spin} from "antd";
@@ -19,51 +19,41 @@ interface SelectInterface {
 
 function JobCreate(props: JobCreateProps) {
 
-    const [searchParams, setSearchParams] = useSearchParams()
+    const searchParams = useParams()
 
-    const orderId = searchParams.get('id')
-    const [admins, setAdmins] = useState<SelectInterface[]>([
-        {
-            value: 1,
-            label: 'admin'
-        },
-        {
-            value: 5,
-            label: 'admin1'
-        },
-        {
-            value: 7,
-            label: 'admin5'
-        },
-    ])
+    const orderId = searchParams['id']
+    const [admins, setAdmins] = useState<SelectInterface[]>([])
     const [order, setOrder] = useState<OrderItem | null>(null)
 
+    const [fetch, setFetch] = useState<boolean>(true)
     const jobCreateRef = useRef(0)
 
-    // useEffect(() => {
-    //     if (jobCreateRef.current) return
-    //     jobCreateRef.current++
-    //     axios.all([
-    //         axios.get(API_URL + 'admins'),
-    //         axios.get(API_URL + 'order/' + orderId)
-    //     ])
-    //         .then(axios.spread((responseAdmins, responseOrder) => {
-    //             if (responseAdmins.status === 200 && responseOrder.status === 200) {
-    //                 if (responseAdmins.data && responseOrder.data) {
-    //                     setAdmins(responseAdmins.data.admins.map((admin : any) => {
-    //                         return {
-    //                             value: admin.id,
-    //                             label: admin.name
-    //                         }
-    //                     }))
-    //                     setOrder(responseOrder.data.order)
-    //                 }
-    //             }
-    //         }))
-    //         .catch((error) => {
-    //             handleUnauthorizedError(error, props.changeUser)
-    //         })
-    // }, []);
+    useEffect(() => {
+        if (jobCreateRef.current) return
+        jobCreateRef.current++
+        axios.all([
+            axios.get(API_URL + 'admins', { withCredentials: true }),
+            axios.get(API_URL + 'order/' + orderId, { withCredentials: true })
+        ])
+            .then(axios.spread((responseAdmins, responseOrder) => {
+                if (responseAdmins.status === 200 && responseOrder.status === 200) {
+                    if (responseAdmins.data && responseOrder.data) {
+                        setAdmins(responseAdmins.data.users.map((admin : any) => {
+                            return {
+                                value: admin.id,
+                                label: admin.name
+                            }
+                        }))
+                        setOrder(responseOrder.data.order)
+                    }
+                }
+            }))
+            .catch((error) => {
+
+            }).finally(() => {
+                setFetch(false)
+        })
+    }, []);
 
     const navigate = useNavigate()
 
@@ -71,25 +61,24 @@ function JobCreate(props: JobCreateProps) {
     const filteredAdmins = admins.filter((o) => !selectedAdmins.includes(o.value));
 
     const handleCreateJob = () => {
-        axios.post(API_URL + 'jobs/' + orderId, {
+        axios.post(API_URL + 'job/' + orderId, {
             users: selectedAdmins
-        })
+        }, {withCredentials: true})
         .then(response => {
             if (response.status === 200 && response.data.success) {
-                message.success('Работа по заявке успешно создана', 2).then(() => {
-                    navigate('/orders')
-                })
+                message.success('Работа по заявке успешно создана')
+                navigate('/orders')
             } else {
                 message.error(response.data.message)
             }
         }).catch((error) => {
-            handleUnauthorizedError(error, props.changeUser)
+            message.error(error.response.data.message)
         })
     }
 
-    // if (order === null) {
-    //     return <Spin fullscreen />
-    // }
+    if (fetch) {
+        return <Spin fullscreen />
+    }
 
     return (
         <div className="JobCreate">

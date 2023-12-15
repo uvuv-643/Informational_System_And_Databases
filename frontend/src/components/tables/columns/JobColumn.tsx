@@ -3,19 +3,25 @@ import {JobItem, UserItem} from "../../../data/interfaces";
 import {ROLE} from "../../../data/enums";
 import {Button} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
+import {Link} from "react-router-dom";
 
 interface JobProps {
     jobs: JobItem[],
-    user : UserItem | null
+    user : UserItem | null,
+    orderId ?: number
 }
 
 function JobColumn(props: JobProps) {
+
+    console.log(props.user)
+
+
     if (props.jobs.length) {
         return (
             <div>
                 {props.jobs.map((job, index) => {
                     return (
-                        <div className="JobItem">
+                        <div key={index} className="JobItem">
                             <div key={index}>Работа #{job.id}</div>
                             {
                                 job.users && job.users.length &&
@@ -29,7 +35,7 @@ function JobColumn(props: JobProps) {
                 <div>
                     {
                         props.user?.roles?.includes(ROLE.ADMIN) && (
-                            <Button size="small" type="primary">Добавить</Button>
+                            <Link to={"/jobs/create/" + props.orderId}><Button size="small" type="primary">Добавить</Button></Link>
                         )
                     }
                 </div>
@@ -44,7 +50,7 @@ function JobColumn(props: JobProps) {
             <div>
                 {
                     props.user?.roles?.includes(ROLE.ADMIN) && (
-                        <Button size="small" type="primary">Добавить</Button>
+                        <Link to={"/jobs/create/" + props.orderId}><Button size="small" type="primary">Добавить</Button></Link>
                     )
                 }
             </div>

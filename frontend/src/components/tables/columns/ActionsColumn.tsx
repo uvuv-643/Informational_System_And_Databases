@@ -3,9 +3,13 @@ import {Button, message, Popconfirm} from "antd";
 import {DeleteFilled} from "@ant-design/icons";
 import {UserItem} from "../../../data/interfaces";
 import {ROLE} from "../../../data/enums";
+import axios from "axios";
+import {API_URL} from "../../../data/variables";
+import {handleUnauthorizedError} from "../../../utils/auth";
 
 interface ActionsProps {
-    user : UserItem | null
+    user : UserItem | null,
+    orderId ?: number
 }
 
 function ActionsColumn(props : ActionsProps) {
@@ -18,7 +22,13 @@ function ActionsColumn(props : ActionsProps) {
                 okText="Да"
                 cancelText="Нет"
                 onConfirm={() => {
-                    message.success('Заявление было успешно удалено')
+                    axios.delete(API_URL + 'order/' + props.orderId, {
+                        withCredentials: true
+                    }).then((response) => {
+                        window.location.replace('/orders')
+                    }).catch((error) => {
+                        message.error("Вы не можете удалить это заявление")
+                    })
                 }}
             >
                 <Button type="link" danger><DeleteFilled /></Button>

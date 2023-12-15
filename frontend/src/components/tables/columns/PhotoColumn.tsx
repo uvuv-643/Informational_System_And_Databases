@@ -1,5 +1,6 @@
 import React from 'react'
 import {PhotoItem} from "../../../data/interfaces";
+import {API_URL} from "../../../data/variables";
 
 interface PhotoProps {
     photos: PhotoItem[]
@@ -11,8 +12,8 @@ function PhotoColumn(props: PhotoProps) {
             <div className="table-photos">
                 {props.photos.map((photo, index) => {
                     return (
-                        <div key={index}><a rel="noreferrer" target="_blank" href={photo.path}>
-                            <img src={photo.path} alt="#"/>
+                        <div key={index}><a rel="noreferrer" target="_blank" href={'http://127.0.0.1:8080/' + photo.path}>
+                            <img src={'http://127.0.0.1:8080/' + photo.path} alt="#"/>
                         </a></div>
                     )
                 })}

@@ -4,8 +4,8 @@ import VotingListItem from "../components/votings/VotingListItem";
 import {message, Spin} from "antd";
 import axios from "axios";
 import {API_URL} from "../data/variables";
-import {data} from "../components/tables/OwnOrdersTable";
 import {handleUnauthorizedError} from "../utils/auth";
+import {useNavigate} from "react-router-dom";
 
 interface VotingsProps {
     changeUser: (user: UserItem | null) => void,
@@ -15,14 +15,20 @@ interface VotingsProps {
 function Votings(props: VotingsProps) {
 
     const votingsRef = useRef(0)
+    const votingsMessageRef = useRef(0)
 
-    const [orders, setOrders] = useState<OrderItem[]>(data)
-    const [fetched, setFetched] = useState<boolean>(true)
+    const navigate = useNavigate()
+
+    const [orders, setOrders] = useState<OrderItem[]>([])
+    const [fetched, setFetched] = useState<boolean>(false)
+
     useEffect(() => {
         if (votingsRef.current) return
         votingsRef.current++
         setTimeout(() => {
-            axios.get(API_URL + 'votings')
+            axios.get(API_URL + 'votings', {
+                withCredentials: true
+            })
                 .then(response => {
                     if (response.status === 200 && response.data) {
                         setOrders(response.data.orders)
@@ -38,15 +44,19 @@ function Votings(props: VotingsProps) {
     if (!fetched) {
         return <Spin fullscreen/>
     }
+
+    if (props.user === null) {
+        return <></>
+    }
     return (
         <div className="Votings">
-            <h1>Проводимые голосования в вашем районе "{props.user?.district}"</h1>
+            <h1>Проводимые голосования в вашем районе</h1>
             {orders.length ? orders
                 .filter(order => order.voting !== null)
                 .map((order, index) => {
                     return <VotingListItem order={order} key={index}/>
                 }) : (
-                <h1>Сейчас в вашем районе не проводится голосования. Приходите позже!</h1>
+                <h3 style={{ fontWeight: 400 }}>Сейчас в вашем районе не проводится голосования. Приходите позже!</h3>
             )}
         </div>
     )

@@ -50,19 +50,19 @@ function OrderCreate(props: OrderCreateProps) {
         axios.post(API_URL + 'order', {
             orderId: orderId,
             description: formData['description'].value
+        }, {
+            withCredentials: true
         }).then(response => {
             if (response.status === 200 && response.data) {
                 if (response.data.success) {
                     message.success('Заявка успешно создана. Ожидайте рассмотрения.')
-                        .then(() => {
-                            navigate('/')
-                        })
+                    navigate('/')
                 } else {
                     message.error(response.data.message)
                 }
             }
         }).catch((error) => {
-            handleUnauthorizedError(error, props.changeUser)
+            message.error(error.response.data.message)
         })
     }
 

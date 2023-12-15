@@ -1,7 +1,7 @@
 import React from 'react'
 import {OrderItem, VotingItem} from "../../data/interfaces";
 import {Link} from "react-router-dom";
-import {Button} from "antd";
+import {Button, Tag} from "antd";
 
 interface VotingListItemProps {
     order : OrderItem
@@ -12,8 +12,8 @@ function VotingListItem(props : VotingListItemProps) {
     return (
         <div className="VotingListItem">
             <div className="VotingListItem__Description">
-                <h3>{ props.order.description.substring(0, 250) }</h3>
-                <h4>{ props.order.location?.district }, { props.order.location?.street }, { props.order.location?.house }</h4>
+                <h3>{ props.order.description.substring(0, 250) } <Tag>{ props.order.voting?.status }</Tag></h3>
+                <h4>{ props.order.location?.district }, { props.order.location?.full_address }</h4>
             </div>
             <div className="VotingListItem__Photos">
                 <div className="table-photos">

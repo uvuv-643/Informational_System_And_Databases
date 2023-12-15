@@ -8,7 +8,7 @@ interface LocationProps {
 function LocationColumn(props : LocationProps) {
     return props.location && (
         <>
-            {props.location.district}, {props.location.street}, {props.location.house}
+            {props.location.district}, {props.location.full_address}
         </>
     )
 }
