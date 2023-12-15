@@ -17,3 +17,8 @@ create or replace trigger create_job_after_finishing_voting
     after update on votings
     for each row
 execute function create_job_after_finishing_voting_handle();
+
+create or replace trigger add_user_role_after_registration
+    after insert on users
+    for each row
+execute function add_user_role_after_registration_handle();

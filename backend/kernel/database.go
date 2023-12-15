@@ -127,9 +127,27 @@ func RunMigrations() {
 }
 
 func seed(filePath string) {
-	conn := Conn
-	seedQuery, _ := os.ReadFile(filePath)
-	conn.Exec(context.Background(), string(seedQuery))
+	seedQueries, _ := utils.ReadSQLFile(filePath)
+	for _, query := range seedQueries {
+		_, err := Conn.Exec(context.Background(), query)
+		if err != nil {
+			log.Printf("Error executing query: %v", err)
+		}
+	}
+}
+
+func SeedBasic() {
+	// seederPath := databaseSeedersPath
+	basicSeeders, _ := os.ReadDir(databaseSeedersPath + "basic/")
+	for _, seeder := range basicSeeders {
+		fmt.Println(databaseSeedersPath + "basic/" + seeder.Name())
+		seedQuery, _ := os.ReadFile(databaseSeedersPath + "basic/" + seeder.Name())
+		_, err := Conn.Exec(context.Background(), string(seedQuery))
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
 }
 
 // CreateSeeder

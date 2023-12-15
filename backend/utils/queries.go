@@ -1,9 +1,12 @@
 package utils
 
 import (
+	"bufio"
 	"context"
 	"github.com/jackc/pgx/v5"
 	"log"
+	"os"
+	"strings"
 )
 
 func SelectIdsFromTable(Conn *pgx.Conn, tableName string) []int {
@@ -27,4 +30,38 @@ func SelectIdsFromTable(Conn *pgx.Conn, tableName string) []int {
 		log.Fatal(err)
 	}
 	return rowSlice
+}
+
+func ReadSQLFile(filePath string) ([]string, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var queries []string
+	var query strings.Builder
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.TrimSpace(line) == "" || strings.HasPrefix(line, "--") {
+			// Skip empty lines and comments
+			continue
+		}
+
+		query.WriteString(line)
+
+		// Check if the line ends with a semicolon indicating the end of the query
+		if strings.HasSuffix(strings.TrimSpace(line), ";") {
+			queries = append(queries, query.String())
+			query.Reset()
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return queries, nil
 }

@@ -5,5 +5,5 @@ CREATE TABLE votings (
     started_at timestamp NOT NULL,
     finished_at timestamp CHECK (finished_at > votings.started_at),
     FOREIGN KEY (order_id) REFERENCES orders(id),
-    FOREIGN KEY (voting_status_id) REFERENCES voting_statuses(id)
+    FOREIGN KEY (voting_status_id) REFERENCES voting_statuses(id) ON DELETE CASCADE
 );
